@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KIN
 
-## Getting Started
+KIN is a trust-first digital community center where neighbors can connect, share useful updates, and recommend people they trust.
 
-First, run the development server:
+This app is built with Next.js App Router, TypeScript, Tailwind, and Supabase.
+
+## What KIN includes today
+
+- Auth: sign up, log in, onboarding, and profile editing
+- Profile avatars with Supabase Storage
+- Town Square feed with text + optional image posts
+- Trusted Services directory with category filters and community recommendations
+
+## Tech stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Supabase (Auth, Postgres, Storage)
+
+## Quick start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+3. Set up Supabase tables/policies:
+
+- Run `docs/service-listings-setup.sql`
+- Run `docs/storage-setup-avatars.sql`
+- Review `docs/kin-data-model.md` for full schema and policy notes
+
+4. Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - start local dev server
+- `npm run lint` - run ESLint
+- `npm run build` - create production build
+- `npm run start` - run production server
 
-## Learn More
+## Trusted Services categories
 
-To learn more about Next.js, take a look at the following resources:
+Current listing categories:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- What's new around town
+- Contractors
+- Tutors
+- Babysitters
+- Accountants
+- Restaurants
+- Vets
+- House cleaners
+- Dog walkers
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The browse filters are client-side, and signed-in users can post new listings from the same category set.
 
-## Deploy on Vercel
+## Project structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/app` - routes and page UI
+- `src/app/components` - reusable UI/form components
+- `src/app/lib` - Supabase and storage helpers
+- `docs` - SQL setup and data model notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Deploy to Vercel (or any Node host that supports Next.js) and provide the same Supabase environment variables used locally.

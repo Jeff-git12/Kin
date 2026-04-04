@@ -156,7 +156,7 @@ The app reads and writes this table from `/trusted-services`. **Run the full scr
 
 **`docs/service-listings-setup.sql`**
 
-Summary: `user_id`, `category` (`contractor` | `tutor` | `babysitter` | `accountant` | `dog_walker`), `title`, `description`, `location`, `contact_name`, `created_at`. RLS allows **public read** (`anon` + `authenticated`) and **insert** only for signed-in users with `user_id = auth.uid()`.
+Summary: `user_id`, `category` (`whats_new_around_town` | `contractor` | `tutor` | `babysitter` | `accountant` | `restaurant` | `vet` | `house_cleaner` | `dog_walker`), `title`, `description`, `location`, `contact_name`, `created_at`. RLS allows **public read** (`anon` + `authenticated`) and **insert** only for signed-in users with `user_id = auth.uid()`.
 
 ### `documents` (future)
 
