@@ -1,241 +1,149 @@
 import {
   bodyTextClass,
-  containerClass,
+  Card,
   KinButtonLink,
   KinCard,
   KinPageTitle,
-  KinSectionTitle,
+  PageContainer,
   PageMain,
+  Section,
 } from "@/app/components/kin-ui";
 
-const exploreCards = [
+const pillars = [
   {
-    title: "Town Square",
-    description:
-      "Open conversation and neighborhood pulse — notices, ideas, and what’s on people’s minds.",
-    href: "/town-square",
+    title: "Connect",
+    body: "Build real relationships with people nearby through useful conversations, thoughtful introductions, and trusted referrals.",
   },
   {
-    title: "Community Board",
-    description:
-      "Offers, asks, and local resources posted by people you can actually trust.",
-    href: "/community-board",
+    title: "Grow",
+    body: "Learn from shared experience, practical guidance, and everyday support that helps families and communities move forward.",
   },
   {
-    title: "Connections",
-    description:
-      "Find people with shared interests, skills, or life stages in a low-pressure space.",
-    href: "/connections",
-  },
-  {
-    title: "Home & Family",
-    description:
-      "Parenting, caregiving, schools, and household life — practical and supportive.",
-    href: "/home-family",
-  },
-  {
-    title: "Local Life",
-    description:
-      "What’s happening nearby: shops, services, civic life, and everyday recommendations.",
-    href: "/local-life",
-  },
-  {
-    title: "Conversations",
-    description:
-      "Threaded discussion with room for nuance — disagreement without disrespect.",
-    href: "/conversations",
-  },
-  {
-    title: "Events",
-    description:
-      "Gatherings, meetups, and community moments worth showing up for.",
-    href: "/events",
+    title: "Belong",
+    body: "Show up as a real person in a respectful environment designed for belonging, not performance.",
   },
 ] as const;
 
-const usefulSpaceCards = [
+const spaces = [
+  {
+    title: "Town Square",
+    description: "A calm place for community conversation and everyday updates.",
+    href: "/town-square",
+  },
   {
     title: "Trusted Services",
-    description:
-      "Neighbor-vetted referrals for people who do good work — contractors, tutors, caregivers, and more.",
+    description: "Browse and share recommendations for people neighbors trust.",
     href: "/trusted-services",
   },
   {
     title: "Meetups",
-    description:
-      "Low-key gatherings in real life: coffee, walks, game nights — show up as yourself.",
+    description: "Low-pressure gatherings that make local connections easier.",
     href: "/meetups",
   },
-  {
-    title: "Support Circle",
-    description:
-      "Meal trains, rides, encouragement, and practical help when life gets heavy.",
-    href: "/support-circle",
-  },
-  {
-    title: "Professional Circle",
-    description:
-      "Referrals, collaborations, and trusted introductions for people who work and build locally.",
-    href: "/professional-circle",
-  },
 ] as const;
-
-const todayItems = [
-  {
-    title: "Need a trusted contractor recommendation",
-    preview:
-      "Small bathroom refresh — looking for someone licensed who’s done work for neighbors.",
-  },
-  {
-    title: "Looking for a math tutor for 6th grade",
-    preview:
-      "Prefer afternoons, in-person or hybrid. Happy to coordinate with another family.",
-  },
-  {
-    title: "Best date-night restaurants nearby",
-    preview:
-      "Quiet tables, not too loud — celebrating an anniversary this weekend.",
-  },
-  {
-    title: "What should I cook tonight?",
-    preview:
-      "Have chicken, kale, and a well-stocked pantry. Open to something new.",
-  },
-  {
-    title: "Anyone interested in a coffee meetup?",
-    preview:
-      "Saturday mid-morning, downtown. No agenda — just good conversation.",
-  },
-  {
-    title: "Introduce yourself to the community",
-    preview:
-      "New here — moved in last month, two kids, love hiking and local bookshops.",
-  },
-] as const;
-
-/** Calm separation between major hub blocks */
-const sectionRule =
-  "mt-16 border-t border-stone-200/80 pt-14 dark:border-stone-800 md:mt-20 md:pt-16";
 
 export default function Home() {
   return (
     <PageMain>
-      <div className={containerClass}>
-        {/* 1 — Welcome / mission */}
-        <section aria-labelledby="welcome-heading" className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-wider text-stone-500 dark:text-stone-400">
-            Connect. Grow. Belong.
+      <PageContainer className="space-y-14" width="wide">
+        <Section className="max-w-3xl" titleId="home-hero">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#5f6f72]">
+            Trust-first community platform
           </p>
-          <KinPageTitle className="mt-3" id="welcome-heading">
-            Welcome to KIN
+          <KinPageTitle id="home-hero" className="mt-3">
+            Connect. Grow. Belong.
           </KinPageTitle>
           <p className={`${bodyTextClass} mt-6 text-lg`}>
-            KIN is a better environment for real connection — where usefulness
-            matters more than noise, and how we treat each other is the
-            foundation.
+            KIN is a calmer digital community center designed for people who
+            want meaningful connection without chaos, outrage, or performative
+            social pressure.
           </p>
-          <p className={`${bodyTextClass} mt-4`}>
-            Think of KIN as a modern digital community center: one calm front
-            desk for your neighborhood and networks, built for trust and
-            intention.
+          <p className={`${bodyTextClass} mt-3`}>
+            We focus on trust, usefulness, and belonging so you can find help,
+            share what you know, and build stronger local relationships.
           </p>
-        </section>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <KinButtonLink href="/about">Why KIN exists</KinButtonLink>
+            <KinButtonLink href="/standards" variant="secondary">
+              Read community standards
+            </KinButtonLink>
+          </div>
+        </Section>
 
-        {/* 2 — Explore KIN */}
-        <section
-          aria-labelledby="explore-heading"
-          className={`${sectionRule} scroll-mt-24`}
+        <Section
+          title="Why KIN exists"
+          titleId="why-kin"
+          subtitle="Most social products optimize for attention. KIN is built around community health. We believe respectful environments help people contribute more, ask for help earlier, and stay connected longer."
         >
-          <KinSectionTitle id="explore-heading">Explore KIN</KinSectionTitle>
-          <p className={`${bodyTextClass} mt-3 max-w-2xl`}>
-            Pick a room to browse — each area is designed for a different kind
-            of helpful, human exchange.
-          </p>
-          <ul className="mt-10 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
-            {exploreCards.map((card) => (
-              <li key={card.href}>
+          <Card className="max-w-3xl bg-[#f3ebe0]">
+            <p className="text-sm leading-relaxed text-[#3f5255]">
+              KIN is for neighbors, families, and professionals who want one
+              thoughtful place to connect and build together - not another feed
+              designed to keep people angry and scrolling.
+            </p>
+          </Card>
+        </Section>
+
+        <Section
+          title="Three pillars"
+          titleId="pillars"
+          subtitle="Every feature in KIN is shaped by these principles."
+        >
+          <ul className="grid list-none gap-5 p-0 md:grid-cols-3">
+            {pillars.map((pillar) => (
+              <li key={pillar.title}>
+                <KinCard className="h-full">
+                  <h3 className="text-lg font-semibold text-[#223436]">
+                    {pillar.title}
+                  </h3>
+                  <p className={`${bodyTextClass} mt-3 text-sm`}>{pillar.body}</p>
+                </KinCard>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section
+          title="A quick standards preview"
+          titleId="standards-preview"
+          subtitle="The tone here is intentional: respectful, useful, and humane."
+        >
+          <Card className="max-w-3xl">
+            <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-[#3f5255]">
+              <li>Respect people, even when you disagree.</li>
+              <li>No harassment, shaming, or rage-driven behavior.</li>
+              <li>No sexualized content or harmful posting.</li>
+              <li>Contribute in good faith and keep things constructive.</li>
+            </ul>
+          </Card>
+        </Section>
+
+        <Section
+          title="Start exploring"
+          titleId="explore"
+          subtitle="A few places where KIN is immediately useful."
+        >
+          <ul className="grid list-none gap-5 p-0 md:grid-cols-3">
+            {spaces.map((space) => (
+              <li key={space.href}>
                 <KinCard className="flex h-full flex-col">
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
-                    {card.title}
+                  <h3 className="text-lg font-semibold text-[#223436]">
+                    {space.title}
                   </h3>
                   <p className={`${bodyTextClass} mt-2 flex-1 text-sm`}>
-                    {card.description}
+                    {space.description}
                   </p>
-                  <KinButtonLink
-                    href={card.href}
-                    variant="secondary"
-                    className="mt-5 w-full sm:w-auto"
-                  >
-                    Open
-                  </KinButtonLink>
+                  <div className="mt-5">
+                    <KinButtonLink href={space.href} variant="secondary">
+                      Open
+                    </KinButtonLink>
+                  </div>
                 </KinCard>
               </li>
             ))}
           </ul>
-        </section>
-
-        {/* 3 — Today in KIN */}
-        <section
-          aria-labelledby="today-heading"
-          className={`${sectionRule} scroll-mt-24`}
-        >
-          <KinSectionTitle id="today-heading">Today in KIN</KinSectionTitle>
-          <p className={`${bodyTextClass} mt-3 max-w-2xl`}>
-            A sample of what people are sharing — thoughtful asks, local tips,
-            and friendly introductions.
-          </p>
-          <ul className="mt-10 max-w-3xl list-none space-y-4 p-0">
-            {todayItems.map((item) => (
-              <li key={item.title}>
-                <KinCard className="p-5">
-                  <h3 className="font-semibold text-stone-900 dark:text-stone-50">
-                    {item.title}
-                  </h3>
-                  <p className={`${bodyTextClass} mt-2 text-sm`}>
-                    {item.preview}
-                  </p>
-                </KinCard>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* 4 — Useful spaces */}
-        <section
-          aria-labelledby="useful-spaces-heading"
-          className={`${sectionRule} scroll-mt-24`}
-        >
-          <KinSectionTitle id="useful-spaces-heading">
-            Useful spaces on KIN
-          </KinSectionTitle>
-          <p className={`${bodyTextClass} mt-3 max-w-2xl`}>
-            Extra rooms for everyday needs — referrals, gatherings, care, and
-            professional trust. Thoughtfully separated so the rest of KIN stays
-            calm.
-          </p>
-          <ul className="mt-10 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-4">
-            {usefulSpaceCards.map((card) => (
-              <li key={card.href}>
-                <KinCard className="flex h-full flex-col">
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
-                    {card.title}
-                  </h3>
-                  <p className={`${bodyTextClass} mt-2 flex-1 text-sm`}>
-                    {card.description}
-                  </p>
-                  <KinButtonLink
-                    href={card.href}
-                    variant="secondary"
-                    className="mt-5 w-full sm:w-auto"
-                  >
-                    Open
-                  </KinButtonLink>
-                </KinCard>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
+        </Section>
+      </PageContainer>
     </PageMain>
   );
 }

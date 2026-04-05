@@ -150,6 +150,24 @@ create policy "Users delete own posts"
   using (auth.uid() = author_id);
 ```
 
+### `post_replies` (Town Square replies)
+
+The app can read and write replies from Town Square posts. **Run the full script:**
+
+**`docs/post-replies-setup.sql`**
+
+Summary: `post_id`, `user_id`, `body`, `created_at`. RLS allows **public read** (`anon` + `authenticated`) and **insert** only for signed-in users with `user_id = auth.uid()`.
+
+### `mention_pings` (mention notifications)
+
+Used for lightweight in-app pings when someone writes a mention in a post/reply (for example `@[Full Name]`).
+
+**Run:**
+
+**`docs/mention-pings-setup.sql`**
+
+Summary: `mentioned_user_id`, `mentioned_by_user_id`, `source_type`, `source_post_id`, `source_reply_id`, `mention_text`, `created_at`, `read_at`. RLS allows authenticated users to **insert** pings as themselves, and **read** pings they sent or received.
+
 ### `service_listings` (Trusted Services)
 
 The app reads and writes this table from `/trusted-services`. **Run the full script:**
@@ -157,6 +175,14 @@ The app reads and writes this table from `/trusted-services`. **Run the full scr
 **`docs/service-listings-setup.sql`**
 
 Summary: `user_id`, `category` (`whats_new_around_town` | `contractor` | `tutor` | `babysitter` | `accountant` | `restaurant` | `vet` | `house_cleaner` | `dog_walker`), `title`, `description`, `location`, `contact_name`, `created_at`. RLS allows **public read** (`anon` + `authenticated`) and **insert** only for signed-in users with `user_id = auth.uid()`.
+
+### `events` (Events page)
+
+The app reads and writes this table from `/events`. **Run the full script:**
+
+**`docs/events-setup.sql`**
+
+Summary: `user_id`, `title`, `description`, `location`, `starts_at`, `created_at`. RLS allows **public read** (`anon` + `authenticated`) and **insert** only for signed-in users with `user_id = auth.uid()`.
 
 ### `documents` (future)
 

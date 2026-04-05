@@ -7,6 +7,7 @@ import {
   postImageObjectPath,
   uploadPublicImage,
 } from "@/app/lib/storage";
+import { createMentionPings } from "@/app/lib/mentions";
 import { useEffect, useState } from "react";
 
 const fieldClass =
@@ -107,15 +108,29 @@ export function PostComposer({ userId, onPosted }: Props) {
         );
       }
 
-      const { error } = await supabase.from("posts").insert({
-        author_id: userId,
-        author_name: authorName,
-        title: title.trim(),
-        body: body.trim(),
-        image_url: imageUrl,
-      });
+      const trimmedTitle = title.trim();
+      const trimmedBody = body.trim();
+      const { data: inserted, error } = await supabase
+        .from("posts")
+        .insert({
+          author_id: userId,
+          author_name: authorName,
+          title: trimmedTitle,
+          body: trimmedBody,
+          image_url: imageUrl,
+        })
+        .select("id")
+        .single();
 
-      if (error) throw error;
+      if (error || !inserted?.id) throw error ?? new Error("Could not create post.");
+
+      await createMentionPings({
+        supabase,
+        text: `${trimmedTitle}\n${trimmedBody}`,
+        mentionedByUserId: userId,
+        sourceType: "post",
+        sourcePostId: inserted.id,
+      });
 
       setTitle("");
       setBody("");

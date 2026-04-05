@@ -2,22 +2,22 @@
 
 import { AvatarUpload } from "@/app/components/avatar-upload";
 import {
+  Button,
+  Card,
   PageMain,
-  containerNarrowClass,
+  PageContainer,
 } from "@/app/components/kin-ui";
 import { getSupabaseBrowserClient } from "@/app/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 const fieldClass =
-  "w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none ring-stone-400 focus:ring-2 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-100";
+  "w-full rounded-xl border border-[#d8cbb8] bg-[#fffdf9] px-3 py-2.5 text-sm text-[#223436] outline-none ring-[#2f6f74] focus:ring-2";
 
-const prose =
-  "text-base leading-relaxed text-stone-700 dark:text-stone-300";
-const proseHeading =
-  "text-xl font-semibold tracking-tight text-stone-900 dark:text-stone-50";
+const prose = "text-base leading-relaxed text-[#4a5a5d]";
+const proseHeading = "text-xl font-semibold tracking-tight text-[#223436]";
 const covenantList =
-  "mt-4 list-disc space-y-2 pl-5 text-stone-700 dark:text-stone-300";
+  "mt-4 list-disc space-y-2 pl-5 text-[#4a5a5d]";
 
 /** Turn PostgREST / Supabase errors into one readable line for the UI */
 function describeError(err: unknown): string {
@@ -207,8 +207,8 @@ export default function OnboardingPage() {
   if (userId === undefined) {
     return (
       <PageMain className="flex flex-col items-center justify-center gap-2 py-16">
-        <p className="text-stone-600 dark:text-stone-400">Checking your sign-in…</p>
-        <p className="max-w-sm text-center text-sm text-stone-500 dark:text-stone-500">
+        <p className="text-[#4a5a5d]">Checking your sign-in…</p>
+        <p className="max-w-sm text-center text-sm text-[#5f6f72]">
           If you just signed up, finish email confirmation if your project
           requires it — then refresh this page.
         </p>
@@ -219,7 +219,7 @@ export default function OnboardingPage() {
   if (userId === null) {
     return (
       <PageMain className="flex flex-col items-center justify-center py-16">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
+        <p className="text-sm text-[#4a5a5d]">
           Redirecting to log in…
         </p>
       </PageMain>
@@ -228,19 +228,33 @@ export default function OnboardingPage() {
 
   return (
     <PageMain>
-      <div className={containerNarrowClass}>
-        <header className="border-b border-stone-200 pb-12 dark:border-stone-800">
-          <h1 className="text-4xl font-semibold tracking-tight text-stone-900 dark:text-stone-50 md:text-5xl">
+      <PageContainer width="narrow" className="space-y-8">
+        <header className="space-y-5">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#5f6f72]">
+            Welcome
+          </p>
+          <h1 className="text-4xl font-semibold tracking-tight text-[#223436] md:text-5xl">
             Welcome to KIN
           </h1>
-          <p className={`${prose} mt-8`}>
-            KIN exists to create a better environment for real connection.
+          <p className={`${prose}`}>
+            KIN is a calmer, safer place to connect and build community.
           </p>
-          <p className={`${prose} mt-6`}>
-            Before you begin, we ask for one simple commitment:
+          <p className={`${prose}`}>
+            Before you get started, please review the mission and standards that
+            shape this space.
           </p>
+        </header>
 
-          <h2 className={`${proseHeading} mt-12`}>The KIN Standard</h2>
+        <Card className="space-y-4 bg-[#f3ebe0]">
+          <h2 className={proseHeading}>Why KIN exists</h2>
+          <p className={prose}>
+            We built KIN for people who want useful conversation without rage
+            cycles, shaming, or performative posting.
+          </p>
+        </Card>
+
+        <Card className="space-y-4">
+          <h2 className={proseHeading}>KIN standards summary</h2>
           <ul className={covenantList}>
             <li>I will treat others with respect</li>
             <li>I will engage in good faith</li>
@@ -252,25 +266,17 @@ export default function OnboardingPage() {
               I understand that violating these standards may result in removal
             </li>
           </ul>
+        </Card>
 
-          <p className={`${prose} mt-8`}>This is not just a platform.</p>
-          <p className={`${prose} mt-4`}>
-            {"It's a shared environment."}
-          </p>
-          <p className={`${prose} mt-4`}>
-            And how we show up here matters.
-          </p>
-        </header>
-
-        <section className="pt-12">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900 dark:text-stone-50">
-            Your profile
+        <section className="space-y-3 pt-1">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#223436]">
+            Your place in KIN
           </h2>
-          <p className={`${prose} mt-2 text-sm`}>
+          <p className={`${prose} text-sm`}>
             Tell us a bit about you. This is saved to your account in Supabase.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             <div className="space-y-1">
               <label htmlFor="full_name" className="text-sm font-medium">
                 Full name
@@ -337,11 +343,11 @@ export default function OnboardingPage() {
                 checked={agreedToStandards}
                 onChange={(e) => setAgreedToStandards(e.target.checked)}
                 disabled={saving}
-                className="mt-1 size-4 shrink-0 rounded border-stone-300 text-stone-900 focus:ring-2 focus:ring-stone-400 dark:border-stone-600 dark:text-stone-100"
+                className="mt-1 size-4 shrink-0 rounded border-[#cdbfa9] text-[#2f6f74] focus:ring-2 focus:ring-[#2f6f74]"
               />
               <label
                 htmlFor="agree_standards"
-                className="text-sm leading-snug text-stone-800 dark:text-stone-200"
+                className="text-sm leading-snug text-[#2f474a]"
               >
                 I agree to the KIN community standards
               </label>
@@ -352,24 +358,24 @@ export default function OnboardingPage() {
                 role="alert"
                 className={
                   message.type === "error"
-                    ? "text-sm text-red-600 dark:text-red-400"
-                    : "text-sm text-green-700 dark:text-green-400"
+                    ? "text-sm text-red-700"
+                    : "text-sm text-[#2f6f74]"
                 }
               >
                 {message.text}
               </p>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={saving || !agreedToStandards}
-              className="w-full rounded-lg bg-stone-900 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+              className="w-full"
             >
               {saving ? "Saving your profile…" : "Save and continue"}
-            </button>
+            </Button>
           </form>
         </section>
-      </div>
+      </PageContainer>
     </PageMain>
   );
 }

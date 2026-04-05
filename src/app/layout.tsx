@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteHeader } from "@/app/components/site-header";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,9 +34,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans text-stone-900 dark:text-stone-100">
+      <body className="min-h-full flex flex-col font-sans text-[#223436]">
         <SiteHeader />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

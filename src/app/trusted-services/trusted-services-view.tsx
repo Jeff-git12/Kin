@@ -1,6 +1,7 @@
 "use client";
 
 import { CreateServiceListingForm } from "@/app/components/create-service-listing-form";
+import { PageMemoryPanel } from "@/app/components/page-memory-badge";
 import {
   PageMain,
   bodyTextClass,
@@ -124,6 +125,11 @@ export function TrustedServicesView() {
     <PageMain>
       <div className={containerClass}>
         <KinPageTitle>Trusted Services</KinPageTitle>
+        <PageMemoryPanel
+          kind="trusted-services"
+          title="Trusted Services"
+          subtitle="A trusted directory for practical recommendations from people in your community."
+        />
         <p className="mt-4 max-w-2xl text-base font-medium leading-relaxed text-stone-800 dark:text-stone-200">
           Find trusted recommendations from the community, or share someone you
           trust.
