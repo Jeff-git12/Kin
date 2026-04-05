@@ -125,9 +125,9 @@ export function PageMemoryPanel({ kind, title, subtitle }: PanelProps) {
   const image = panelImageByKind[kind];
   return (
     <div className="mt-6 grid gap-4 rounded-2xl border border-[#d8cbb8] bg-[#fffdf9] p-4 shadow-[0_8px_24px_rgba(42,51,53,0.06)] sm:grid-cols-[180px_1fr] sm:items-center">
-      <div className="h-[96px] overflow-hidden rounded-xl border border-[#dfd5c7] bg-[#f7f3ec]">
+      <div className="h-[104px] overflow-hidden rounded-xl border border-[#c7ced6] bg-[#e8ecf1]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+        <img src={image.src} alt={image.alt} className="h-full w-full object-contain" />
       </div>
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#4a5a5d]">

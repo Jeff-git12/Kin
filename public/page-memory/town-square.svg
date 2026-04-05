@@ -1,21 +1,46 @@
 <svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="180" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#E9F2F0"/>
-      <stop offset="1" stop-color="#D6E7E2"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DEE3E9"/>
+      <stop offset="1" stop-color="#B5BDC8"/>
     </linearGradient>
+    <linearGradient id="ringMetal" x1="84" y1="10" x2="236" y2="162" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDFEFF"/>
+      <stop offset="0.17" stop-color="#B7C0CA"/>
+      <stop offset="0.37" stop-color="#F6F9FC"/>
+      <stop offset="0.58" stop-color="#8894A1"/>
+      <stop offset="0.78" stop-color="#EEF2F6"/>
+      <stop offset="1" stop-color="#323C48"/>
+    </linearGradient>
+    <radialGradient id="plate" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(145 50) rotate(55) scale(110)">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E7ECF2"/>
+    </radialGradient>
+    <linearGradient id="glossArc" x1="160" y1="28" x2="160" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="34" y="4" width="252" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#121924" flood-opacity="0.32"/>
+    </filter>
   </defs>
-  <rect width="320" height="180" rx="16" fill="url(#sky)"/>
-  <rect x="0" y="130" width="320" height="50" fill="#C9DDD7"/>
-  <path d="M45 130L120 92L196 130L120 168L45 130Z" fill="#E8EFE9" stroke="#8EA9A4" stroke-width="2"/>
-  <path d="M124 130L200 92L275 130L200 168L124 130Z" fill="#DEEAE5" stroke="#86A39E" stroke-width="2"/>
-  <circle cx="160" cy="103" r="21" fill="#B8D1CC" stroke="#72948E" stroke-width="2"/>
-  <circle cx="160" cy="103" r="8" fill="#2F6F74"/>
-  <rect x="39" y="72" width="34" height="58" rx="5" fill="#F8FCFB" stroke="#8FAEA8" stroke-width="2"/>
-  <rect x="79" y="62" width="28" height="68" rx="5" fill="#F8FCFB" stroke="#8FAEA8" stroke-width="2"/>
-  <rect x="213" y="60" width="30" height="70" rx="5" fill="#F8FCFB" stroke="#8FAEA8" stroke-width="2"/>
-  <rect x="250" y="74" width="32" height="56" rx="5" fill="#F8FCFB" stroke="#8FAEA8" stroke-width="2"/>
-  <circle cx="120" cy="145" r="5" fill="#5E827C"/>
-  <circle cx="200" cy="145" r="5" fill="#5E827C"/>
-  <path d="M0 130H320" stroke="#7F9F99" stroke-width="2"/>
+  <rect width="320" height="180" rx="16" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <circle cx="160" cy="86" r="73" fill="url(#ringMetal)"/>
+    <circle cx="160" cy="86" r="60" fill="url(#plate)" stroke="#8A97A5" stroke-width="2.3"/>
+    <ellipse cx="160" cy="57" rx="49" ry="20" fill="url(#glossArc)"/>
+    <path d="M93 87C116 63 204 63 227 87" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M101 123C124 138 196 138 219 123" stroke="#7D8896" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round"/>
+
+    <circle cx="121" cy="38" r="3.4" fill="#5A6675"/><circle cx="199" cy="38" r="3.4" fill="#5A6675"/>
+    <circle cx="121" cy="134" r="3.4" fill="#5A6675"/><circle cx="199" cy="134" r="3.4" fill="#5A6675"/>
+
+    <path d="M160 44L196 65V108L160 129L124 108V65L160 44Z" fill="#EBF0F6" stroke="#1D2732" stroke-width="3.2"/>
+    <path d="M160 44V129M124 65L160 86L196 65" stroke="#1D2732" stroke-width="2.7"/>
+    <circle cx="160" cy="85" r="8.4" fill="#2F6F74"/>
+    <circle cx="136" cy="94" r="5.2" fill="#6F7C8B"/>
+    <circle cx="184" cy="94" r="5.2" fill="#6F7C8B"/>
+    <path d="M131 107H189" stroke="#2F6F74" stroke-width="5.2" stroke-linecap="round"/>
+    <text x="160" y="138" text-anchor="middle" fill="#0F1721" font-size="14.6" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="1.1">TOWN SQUARE</text>
+  </g>
 </svg>

@@ -1,21 +1,43 @@
 <svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F8F2E8"/>
-      <stop offset="1" stop-color="#EBDFCF"/>
+      <stop stop-color="#DEE3E9"/>
+      <stop offset="1" stop-color="#B5BDC8"/>
     </linearGradient>
+    <linearGradient id="ringMetal" x1="84" y1="10" x2="236" y2="162" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDFEFF"/>
+      <stop offset="0.17" stop-color="#B7C0CA"/>
+      <stop offset="0.37" stop-color="#F6F9FC"/>
+      <stop offset="0.58" stop-color="#8894A1"/>
+      <stop offset="0.78" stop-color="#EEF2F6"/>
+      <stop offset="1" stop-color="#323C48"/>
+    </linearGradient>
+    <radialGradient id="plate" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(145 50) rotate(55) scale(110)">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E7ECF2"/>
+    </radialGradient>
+    <linearGradient id="glossArc" x1="160" y1="28" x2="160" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="34" y="4" width="252" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#121924" flood-opacity="0.32"/>
+    </filter>
   </defs>
   <rect width="320" height="180" rx="16" fill="url(#bg)"/>
-  <rect x="28" y="24" width="264" height="132" rx="12" fill="#FFFDF9" stroke="#D8CBB8" stroke-width="2.5"/>
-  <rect x="42" y="40" width="130" height="12" rx="6" fill="#EFE4D4"/>
-  <rect x="42" y="62" width="76" height="8" rx="4" fill="#D7C8B3"/>
-  <rect x="42" y="78" width="76" height="8" rx="4" fill="#D7C8B3"/>
-  <rect x="42" y="94" width="76" height="8" rx="4" fill="#D7C8B3"/>
-  <rect x="42" y="110" width="76" height="8" rx="4" fill="#D7C8B3"/>
-  <circle cx="196" cy="70" r="14" fill="#D0DFDA"/>
-  <path d="M178 108C180.8 97.5 186.4 91 196 91C205.6 91 211.2 97.5 214 108" stroke="#799A94" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="248" cy="70" r="14" fill="#D0DFDA"/>
-  <path d="M230 108C232.8 97.5 238.4 91 248 91C257.6 91 263.2 97.5 266 108" stroke="#799A94" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="276" cy="42" r="14" fill="#F3E9DA"/>
-  <path d="M270 42L275 47L284 37" stroke="#8A6851" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g filter="url(#shadow)">
+    <circle cx="160" cy="86" r="73" fill="url(#ringMetal)"/>
+    <circle cx="160" cy="86" r="60" fill="url(#plate)" stroke="#8A97A5" stroke-width="2.3"/>
+    <ellipse cx="160" cy="57" rx="49" ry="20" fill="url(#glossArc)"/>
+    <path d="M93 87C116 63 204 63 227 87" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M101 123C124 138 196 138 219 123" stroke="#7D8896" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round"/>
+
+    <circle cx="121" cy="38" r="3.4" fill="#5A6675"/><circle cx="199" cy="38" r="3.4" fill="#5A6675"/>
+    <circle cx="121" cy="134" r="3.4" fill="#5A6675"/><circle cx="199" cy="134" r="3.4" fill="#5A6675"/>
+
+    <path d="M160 48L195 63V84C195 105 181 121 160 127C139 121 125 105 125 84V63L160 48Z" fill="#EBF0F6" stroke="#1D2732" stroke-width="3.2"/>
+    <path d="M146 86L157 97L178 75" stroke="#2F6F74" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M126 107H194" stroke="#2F6F74" stroke-width="4.2" stroke-linecap="round"/>
+    <text x="160" y="138" text-anchor="middle" fill="#0F1721" font-size="13.7" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="0.9">TRUSTED SERVICES</text>
+  </g>
 </svg>

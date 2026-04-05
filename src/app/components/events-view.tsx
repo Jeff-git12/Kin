@@ -20,6 +20,8 @@ type EventRow = {
   description: string;
   location: string;
   starts_at: string;
+  ends_at: string | null;
+  image_url: string | null;
   created_at: string;
 };
 
@@ -73,6 +75,35 @@ function formatEventDateTime(iso: string): string {
   });
 }
 
+function formatEventDateRange(startsAtIso: string, endsAtIso: string | null): string {
+  const start = new Date(startsAtIso);
+  if (Number.isNaN(start.getTime())) return "Date to be confirmed";
+  if (!endsAtIso) return formatEventDateTime(startsAtIso);
+
+  const end = new Date(endsAtIso);
+  if (Number.isNaN(end.getTime())) return formatEventDateTime(startsAtIso);
+
+  const sameDay = start.toDateString() === end.toDateString();
+  if (sameDay) {
+    const startLabel = start.toLocaleString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    const endLabel = end.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    return `${startLabel} - ${endLabel}`;
+  }
+
+  const startLabel = formatEventDateTime(startsAtIso);
+  const endLabel = formatEventDateTime(endsAtIso);
+  return `${startLabel} - ${endLabel}`;
+}
+
 export function EventsView() {
   const [userId, setUserId] = useState<string | null>(null);
   const [events, setEvents] = useState<EventRow[]>([]);
@@ -85,7 +116,7 @@ export function EventsView() {
       const supabase = getSupabaseBrowserClient();
       const { data, error } = await supabase
         .from("events")
-        .select("id, title, description, location, starts_at, created_at")
+        .select("id, title, description, location, starts_at, ends_at, image_url, created_at")
         .order("starts_at", { ascending: true })
         .limit(100);
 
@@ -130,8 +161,10 @@ export function EventsView() {
     return [...events].sort((a, b) => {
       const aTime = new Date(a.starts_at).getTime();
       const bTime = new Date(b.starts_at).getTime();
-      const aUpcoming = !Number.isNaN(aTime) && aTime >= now;
-      const bUpcoming = !Number.isNaN(bTime) && bTime >= now;
+      const aEndTime = a.ends_at ? new Date(a.ends_at).getTime() : aTime;
+      const bEndTime = b.ends_at ? new Date(b.ends_at).getTime() : bTime;
+      const aUpcoming = !Number.isNaN(aEndTime) && aEndTime >= now;
+      const bUpcoming = !Number.isNaN(bEndTime) && bEndTime >= now;
 
       if (aUpcoming !== bUpcoming) return aUpcoming ? -1 : 1;
       if (aUpcoming && bUpcoming) return aTime - bTime;
@@ -252,7 +285,17 @@ export function EventsView() {
             <ul className="mt-8 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
               {sortedEvents.map((event) => (
                 <li key={event.id}>
-                  <KinCard className="flex h-full flex-col p-6">
+                  <KinCard className="flex h-full flex-col overflow-hidden p-6">
+                    {event.image_url ? (
+                      <div className="-mx-6 -mt-6 mb-5 overflow-hidden rounded-b-xl bg-[#e7edf2]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={event.image_url}
+                          alt=""
+                          className="h-40 w-full object-cover"
+                        />
+                      </div>
+                    ) : null}
                     <h2 className="text-lg font-semibold leading-snug tracking-tight text-[#223436]">
                       {event.title}
                     </h2>
@@ -268,10 +311,10 @@ export function EventsView() {
                       </div>
                       <div>
                         <dt className="text-xs font-semibold uppercase tracking-wide text-[#5f6f72]">
-                          Date & time
+                          {event.ends_at ? "Date range" : "Date & time"}
                         </dt>
                         <dd className="mt-0.5 text-[#3f5255]">
-                          {formatEventDateTime(event.starts_at)}
+                          {formatEventDateRange(event.starts_at, event.ends_at)}
                         </dd>
                       </div>
                     </dl>

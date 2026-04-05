@@ -2,6 +2,12 @@
 
 import { getSupabaseBrowserClient } from "@/app/lib/supabase";
 import { checkContentSafety } from "@/app/lib/content-safety";
+import {
+  STORAGE_BUCKETS,
+  describeStorageUploadError,
+  eventImageObjectPath,
+  uploadPublicImage,
+} from "@/app/lib/storage";
 import { useState } from "react";
 
 const fieldClass =
@@ -29,6 +35,8 @@ export function CreateEventForm({ userId, onCreated }: Props) {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [startsAtLocal, setStartsAtLocal] = useState("");
+  const [endsAtLocal, setEndsAtLocal] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -52,13 +60,45 @@ export function CreateEventForm({ userId, onCreated }: Props) {
       }
 
       const startsAtIso = new Date(startsAtLocal).toISOString();
+      const endsAtIso = endsAtLocal ? new Date(endsAtLocal).toISOString() : null;
+      const startsAtMs = new Date(startsAtIso).getTime();
+      const endsAtMs = endsAtIso ? new Date(endsAtIso).getTime() : null;
+      if (endsAtMs && endsAtMs < startsAtMs) {
+        throw new Error("End date/time must be after the start date/time.");
+      }
+
       const supabase = getSupabaseBrowserClient();
+      let imageUrl: string | null = null;
+      if (file) {
+        if (!file.type.startsWith("image/")) {
+          throw new Error("That file is not an image. Try JPG, PNG, or WebP.");
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("That photo is a bit large. Please pick one under 5MB.");
+        }
+        const path = eventImageObjectPath(userId, file);
+        try {
+          imageUrl = await uploadPublicImage(
+            supabase,
+            STORAGE_BUCKETS.eventImages,
+            path,
+            file,
+          );
+        } catch (uploadErr) {
+          throw new Error(
+            describeStorageUploadError(uploadErr, STORAGE_BUCKETS.eventImages),
+          );
+        }
+      }
+
       const { error } = await supabase.from("events").insert({
         user_id: userId,
         title: trimmedTitle,
         description: trimmedDescription,
         location: trimmedLocation,
         starts_at: startsAtIso,
+        ends_at: endsAtIso,
+        image_url: imageUrl,
       });
 
       if (error) throw error;
@@ -67,6 +107,8 @@ export function CreateEventForm({ userId, onCreated }: Props) {
       setDescription("");
       setLocation("");
       setStartsAtLocal("");
+      setEndsAtLocal("");
+      setFile(null);
       setMessage({
         type: "success",
         text: "Event created. It is now visible to the community.",
@@ -142,7 +184,7 @@ export function CreateEventForm({ userId, onCreated }: Props) {
 
       <div className="space-y-1">
         <label htmlFor="event-starts-at" className="text-sm font-medium text-[#2f474a]">
-          Date and time
+          Start date and time
         </label>
         <input
           id="event-starts-at"
@@ -153,6 +195,44 @@ export function CreateEventForm({ userId, onCreated }: Props) {
           required
           disabled={saving}
         />
+      </div>
+
+      <div className="space-y-1">
+        <label htmlFor="event-ends-at" className="text-sm font-medium text-[#2f474a]">
+          End date and time (optional)
+        </label>
+        <input
+          id="event-ends-at"
+          type="datetime-local"
+          value={endsAtLocal}
+          onChange={(e) => setEndsAtLocal(e.target.value)}
+          className={fieldClass}
+          disabled={saving}
+        />
+        <p className="text-xs text-[#5f6f72]">
+          Add this for multi-day events or events with a clear end time.
+        </p>
+      </div>
+
+      <div className="space-y-1">
+        <label htmlFor="event-image" className="text-sm font-medium text-[#2f474a]">
+          Event photo (optional)
+        </label>
+        <input
+          id="event-image"
+          type="file"
+          accept="image/*"
+          disabled={saving}
+          className={`${fieldClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#efe5d8] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[#223436]`}
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        />
+        {file ? (
+          <p className="text-xs text-[#5f6f72]">Selected: {file.name}</p>
+        ) : (
+          <p className="text-xs text-[#5f6f72]">
+            Use a clear image that helps people recognize the event.
+          </p>
+        )}
       </div>
 
       {message ? (

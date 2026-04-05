@@ -37,6 +37,7 @@ export function describeStorageUploadError(err: unknown, bucketId: string): stri
 export const STORAGE_BUCKETS = {
   avatars: "avatars",
   postImages: "post-images",
+  eventImages: "event-images",
 } as const;
 
 function extensionFromFile(file: File): string {
@@ -91,6 +92,12 @@ export function avatarObjectPath(userId: string): string {
 
 /** Unique object path per post image. */
 export function postImageObjectPath(userId: string, file: File): string {
+  const ext = extensionFromFile(file);
+  return `${userId}/${crypto.randomUUID()}.${ext}`;
+}
+
+/** Unique object path per event image. */
+export function eventImageObjectPath(userId: string, file: File): string {
   const ext = extensionFromFile(file);
   return `${userId}/${crypto.randomUUID()}.${ext}`;
 }

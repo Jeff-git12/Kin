@@ -1,27 +1,51 @@
 <svg width="320" height="180" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F8F1E7"/>
-      <stop offset="1" stop-color="#E9DEC9"/>
+      <stop stop-color="#DEE3E9"/>
+      <stop offset="1" stop-color="#B5BDC8"/>
     </linearGradient>
+    <linearGradient id="ringMetal" x1="84" y1="10" x2="236" y2="162" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDFEFF"/>
+      <stop offset="0.17" stop-color="#B7C0CA"/>
+      <stop offset="0.37" stop-color="#F6F9FC"/>
+      <stop offset="0.58" stop-color="#8894A1"/>
+      <stop offset="0.78" stop-color="#EEF2F6"/>
+      <stop offset="1" stop-color="#323C48"/>
+    </linearGradient>
+    <radialGradient id="plate" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(145 50) rotate(55) scale(110)">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E7ECF2"/>
+    </radialGradient>
+    <linearGradient id="glossArc" x1="160" y1="28" x2="160" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="34" y="4" width="252" height="176" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#121924" flood-opacity="0.32"/>
+    </filter>
   </defs>
   <rect width="320" height="180" rx="16" fill="url(#bg)"/>
-  <rect x="46" y="26" width="228" height="128" rx="14" fill="#FFFDF9" stroke="#D6C8B1" stroke-width="2.5"/>
-  <rect x="46" y="26" width="228" height="34" rx="14" fill="#EFE4D4"/>
-  <rect x="76" y="18" width="14" height="22" rx="7" fill="#2F6F74"/>
-  <rect x="230" y="18" width="14" height="22" rx="7" fill="#2F6F74"/>
-  <line x1="46" y1="60" x2="274" y2="60" stroke="#DCCDB5" stroke-width="2"/>
-  <rect x="68" y="72" width="34" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="108" y="72" width="34" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="148" y="72" width="34" height="22" rx="6" fill="#C0D5CF"/>
-  <rect x="188" y="72" width="34" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="228" y="72" width="24" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="68" y="100" width="34" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="108" y="100" width="34" height="22" rx="6" fill="#EFE4D4"/>
-  <rect x="148" y="100" width="34" height="22" rx="6" fill="#2F6F74"/>
-  <path d="M156 111L162 117L174 104" stroke="#FFFDF9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="188" y="100" width="34" height="22" rx="6" fill="#D5E3DE"/>
-  <rect x="228" y="100" width="24" height="22" rx="6" fill="#D5E3DE"/>
-  <circle cx="264" cy="136" r="10" fill="#DCCDB5"/>
-  <path d="M264 131V136L268 139" stroke="#886D55" stroke-width="2.2" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+    <circle cx="160" cy="86" r="73" fill="url(#ringMetal)"/>
+    <circle cx="160" cy="86" r="60" fill="url(#plate)" stroke="#8A97A5" stroke-width="2.3"/>
+    <ellipse cx="160" cy="57" rx="49" ry="20" fill="url(#glossArc)"/>
+    <path d="M93 87C116 63 204 63 227 87" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M101 123C124 138 196 138 219 123" stroke="#7D8896" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round"/>
+
+    <circle cx="121" cy="38" r="3.4" fill="#5A6675"/><circle cx="199" cy="38" r="3.4" fill="#5A6675"/>
+    <circle cx="121" cy="134" r="3.4" fill="#5A6675"/><circle cx="199" cy="134" r="3.4" fill="#5A6675"/>
+
+    <rect x="116" y="42" width="88" height="54" rx="8" fill="none" stroke="#1D2732" stroke-width="3.2"/>
+    <line x1="138" y1="35" x2="138" y2="46.5" stroke="#1D2732" stroke-width="4.2" stroke-linecap="round"/>
+    <line x1="182" y1="35" x2="182" y2="46.5" stroke="#1D2732" stroke-width="4.2" stroke-linecap="round"/>
+    <g stroke="#1D2732" stroke-width="3" stroke-linecap="round">
+      <line x1="122" y1="54" x2="198" y2="54"/>
+      <line x1="122" y1="64" x2="198" y2="64"/>
+      <line x1="122" y1="74" x2="198" y2="74"/>
+      <line x1="122" y1="84" x2="198" y2="84"/>
+    </g>
+    <path d="M132 103H188" stroke="#2F6F74" stroke-width="5.3" stroke-linecap="round"/>
+    <path d="M136 114H184" stroke="#2F6F74" stroke-width="5.3" stroke-linecap="round"/>
+    <text x="160" y="138" text-anchor="middle" fill="#0F1721" font-size="17.5" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="1.4">EVENTS</text>
+  </g>
 </svg>
