@@ -8,6 +8,7 @@ import {
   uploadPublicImage,
 } from "@/app/lib/storage";
 import { createMentionPings } from "@/app/lib/mentions";
+import { checkContentSafety } from "@/app/lib/content-safety";
 import { useEffect, useState } from "react";
 
 const fieldClass =
@@ -78,6 +79,12 @@ export function PostComposer({ userId, onPosted }: Props) {
 
     try {
       const supabase = getSupabaseBrowserClient();
+      const trimmedTitle = title.trim();
+      const trimmedBody = body.trim();
+      const safety = checkContentSafety(`${trimmedTitle}\n${trimmedBody}`);
+      if (!safety.ok) {
+        throw new Error(safety.message);
+      }
 
       const { data: profile } = await supabase
         .from("profiles")
@@ -108,8 +115,6 @@ export function PostComposer({ userId, onPosted }: Props) {
         );
       }
 
-      const trimmedTitle = title.trim();
-      const trimmedBody = body.trim();
       const { data: inserted, error } = await supabase
         .from("posts")
         .insert({

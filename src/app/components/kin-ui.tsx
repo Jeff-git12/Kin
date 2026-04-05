@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 /** Full-width main area below the header */
 export const mainSurfaceClass =
-  "min-h-screen flex-1 bg-[#f7f3ec]";
+  "min-h-screen flex-1 bg-[var(--background)]";
 
 /** Default content width for hub-style pages */
 export const containerClass =
@@ -46,7 +46,7 @@ type CardProps = {
 export function Card({ children, className = "" }: CardProps) {
   return (
     <div
-      className={`rounded-3xl border border-[#dfd5c7] bg-[#fffdf9] p-6 shadow-[0_8px_24px_rgba(42,51,53,0.07)] ${className}`.trim()}
+      className={`rounded-3xl border border-[var(--border-soft)] bg-[var(--surface)] p-6 shadow-[0_8px_24px_rgba(42,51,53,0.07)] ${className}`.trim()}
     >
       {children}
     </div>
@@ -78,12 +78,12 @@ export function Section({
         <div className="space-y-2">
           <h2
             id={titleId}
-            className="text-2xl font-semibold tracking-tight text-[#223436] md:text-3xl"
+            className="text-2xl font-semibold tracking-tight text-[var(--foreground)] md:text-3xl"
           >
             {title}
           </h2>
           {subtitle ? (
-            <p className="max-w-3xl text-base leading-relaxed text-[#4a5a5d]">
+            <p className="max-w-3xl text-base leading-relaxed text-[var(--foreground)]/80">
               {subtitle}
             </p>
           ) : null}
@@ -105,9 +105,9 @@ const btnBase =
   "inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f6f74]";
 
 const btnPrimary =
-  "bg-[#2f6f74] text-[#f7f3ec] hover:bg-[#285f63] disabled:cursor-not-allowed disabled:opacity-60";
+  "bg-[var(--accent)] text-[var(--background)] hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-60";
 const btnSecondary =
-  "border border-[#d8cbb8] bg-[#f3ebe0] text-[#2f474a] hover:bg-[#eadfcf] disabled:cursor-not-allowed disabled:opacity-60";
+  "border border-[var(--field-border)] bg-[var(--accent-soft)] text-[var(--foreground)] hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60";
 
 type ButtonProps = {
   children: ReactNode;
@@ -171,7 +171,7 @@ export function KinSectionTitle({
   return (
     <Tag
       id={id}
-      className={`text-2xl font-semibold tracking-tight text-[#223436] md:text-3xl ${className}`.trim()}
+      className={`text-2xl font-semibold tracking-tight text-[var(--foreground)] md:text-3xl ${className}`.trim()}
     >
       {children}
     </Tag>
@@ -190,7 +190,7 @@ export function KinPageTitle({
   return (
     <h1
       id={id}
-      className={`text-4xl font-semibold tracking-tight text-[#223436] md:text-5xl ${className}`.trim()}
+      className={`text-4xl font-semibold tracking-tight text-[var(--foreground)] md:text-5xl ${className}`.trim()}
     >
       {children}
     </h1>
@@ -198,7 +198,7 @@ export function KinPageTitle({
 }
 
 export const bodyTextClass =
-  "text-base leading-relaxed text-[#4a5a5d]";
+  "text-base leading-relaxed text-[var(--foreground)]/80";
 
 export function FeedCard({
   title,

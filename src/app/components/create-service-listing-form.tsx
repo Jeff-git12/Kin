@@ -5,6 +5,7 @@ import {
   SERVICE_CATEGORY_OPTIONS,
   type ServiceCategory,
 } from "@/app/lib/service-categories";
+import { checkContentSafety } from "@/app/lib/content-safety";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -53,14 +54,25 @@ export function CreateServiceListingForm({ userId, onCreated }: Props) {
     setSaving(true);
 
     try {
+      const trimmedTitle = title.trim();
+      const trimmedDescription = description.trim();
+      const trimmedLocation = location.trim();
+      const trimmedContactName = contactName.trim();
+      const safety = checkContentSafety(
+        `${trimmedTitle}\n${trimmedDescription}\n${trimmedLocation}\n${trimmedContactName}`,
+      );
+      if (!safety.ok) {
+        throw new Error(safety.message);
+      }
+
       const supabase = getSupabaseBrowserClient();
       const { error } = await supabase.from("service_listings").insert({
         user_id: userId,
         category,
-        title: title.trim(),
-        description: description.trim(),
-        location: location.trim(),
-        contact_name: contactName.trim(),
+        title: trimmedTitle,
+        description: trimmedDescription,
+        location: trimmedLocation,
+        contact_name: trimmedContactName,
       });
 
       if (error) throw error;

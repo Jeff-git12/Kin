@@ -1,6 +1,7 @@
 "use client";
 
 import { getSupabaseBrowserClient } from "@/app/lib/supabase";
+import { checkContentSafety } from "@/app/lib/content-safety";
 import { useState } from "react";
 
 const fieldClass =
@@ -40,13 +41,23 @@ export function CreateEventForm({ userId, onCreated }: Props) {
     setSaving(true);
 
     try {
+      const trimmedTitle = title.trim();
+      const trimmedDescription = description.trim();
+      const trimmedLocation = location.trim();
+      const safety = checkContentSafety(
+        `${trimmedTitle}\n${trimmedDescription}\n${trimmedLocation}`,
+      );
+      if (!safety.ok) {
+        throw new Error(safety.message);
+      }
+
       const startsAtIso = new Date(startsAtLocal).toISOString();
       const supabase = getSupabaseBrowserClient();
       const { error } = await supabase.from("events").insert({
         user_id: userId,
-        title: title.trim(),
-        description: description.trim(),
-        location: location.trim(),
+        title: trimmedTitle,
+        description: trimmedDescription,
+        location: trimmedLocation,
         starts_at: startsAtIso,
       });
 

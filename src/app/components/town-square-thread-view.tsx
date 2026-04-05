@@ -7,7 +7,9 @@ import {
   PageContainer,
   PageMain,
 } from "@/app/components/kin-ui";
+import { checkContentSafety } from "@/app/lib/content-safety";
 import { addMentionTokenPrefix, createMentionPings } from "@/app/lib/mentions";
+import { createModerationFlag } from "@/app/lib/moderation-flags";
 import { getSupabaseBrowserClient } from "@/app/lib/supabase";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -67,6 +69,27 @@ function describeReplyError(err: unknown): string {
   return raw || "Could not post reply. Please try again.";
 }
 
+function describeReportError(err: unknown): string {
+  const raw =
+    err && typeof err === "object" && "message" in err
+      ? String((err as { message?: string }).message ?? "")
+      : err instanceof Error
+        ? err.message
+        : "Could not send report. Please try again.";
+  const lower = raw.toLowerCase();
+  if (lower.includes("moderation_flags") || lower.includes("does not exist")) {
+    return "Reporting is not set up yet. Run docs/moderation-flags-setup.sql in Supabase.";
+  }
+  if (
+    lower.includes("row-level security") ||
+    lower.includes("policy") ||
+    lower.includes("rls")
+  ) {
+    return "Could not send report due to permissions. Confirm moderation_flags policies from docs/moderation-flags-setup.sql.";
+  }
+  return raw || "Could not send report. Please try again.";
+}
+
 export function TownSquareThreadView({ postId }: { postId: string }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [post, setPost] = useState<PostRow | null>(null);
@@ -78,6 +101,12 @@ export function TownSquareThreadView({ postId }: { postId: string }) {
   const [replyDraft, setReplyDraft] = useState("");
   const [replySaving, setReplySaving] = useState(false);
   const [replyMessage, setReplyMessage] = useState<string | null>(null);
+  const [reportMessageByKey, setReportMessageByKey] = useState<
+    Record<string, string | null>
+  >({});
+  const [reportingByKey, setReportingByKey] = useState<Record<string, boolean>>(
+    {},
+  );
 
   const loadThread = useCallback(async () => {
     setLoadError(null);
@@ -192,6 +221,10 @@ export function TownSquareThreadView({ postId }: { postId: string }) {
     setReplySaving(true);
     setReplyMessage(null);
     try {
+      const safety = checkContentSafety(body);
+      if (!safety.ok) {
+        throw new Error(safety.message);
+      }
       const supabase = getSupabaseBrowserClient();
       const { data: inserted, error } = await supabase
         .from("post_replies")
@@ -221,6 +254,37 @@ export function TownSquareThreadView({ postId }: { postId: string }) {
       setReplyMessage(describeReplyError(err));
     } finally {
       setReplySaving(false);
+    }
+  }
+
+  async function handleReport({
+    key,
+    sourceType,
+    sourceId,
+  }: {
+    key: string;
+    sourceType: "post" | "reply";
+    sourceId: string;
+  }) {
+    if (!userId) return;
+    setReportingByKey((prev) => ({ ...prev, [key]: true }));
+    setReportMessageByKey((prev) => ({ ...prev, [key]: null }));
+    try {
+      const supabase = getSupabaseBrowserClient();
+      await createModerationFlag({
+        supabase,
+        reporterUserId: userId,
+        sourceType,
+        sourceId,
+      });
+      setReportMessageByKey((prev) => ({ ...prev, [key]: "Report sent." }));
+    } catch (err) {
+      setReportMessageByKey((prev) => ({
+        ...prev,
+        [key]: describeReportError(err),
+      }));
+    } finally {
+      setReportingByKey((prev) => ({ ...prev, [key]: false }));
     }
   }
 
@@ -259,6 +323,29 @@ export function TownSquareThreadView({ postId }: { postId: string }) {
               postedAtLabel={formatDate(post.created_at)}
               linkifyBody
             />
+            {userId ? (
+              <div className="mt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  className="text-xs font-medium text-[#6b4d2f] underline underline-offset-4"
+                  onClick={() =>
+                    void handleReport({
+                      key: `post:${post.id}`,
+                      sourceType: "post",
+                      sourceId: post.id,
+                    })
+                  }
+                  disabled={reportingByKey[`post:${post.id}`]}
+                >
+                  {reportingByKey[`post:${post.id}`] ? "Reporting..." : "Report post"}
+                </button>
+                {reportMessageByKey[`post:${post.id}`] ? (
+                  <p className="text-xs text-[#5f6f72]">
+                    {reportMessageByKey[`post:${post.id}`]}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
             <KinCard className="border-[#e5dacb] bg-[#fffaf2] p-4">
               <h2 className="text-sm font-semibold text-[#223436]">
@@ -295,6 +382,31 @@ export function TownSquareThreadView({ postId }: { postId: string }) {
                         text={reply.body}
                         className="mt-1 text-sm leading-relaxed text-[#3f5255]"
                       />
+                      {userId ? (
+                        <div className="mt-2 flex items-center gap-2">
+                          <button
+                            type="button"
+                            className="text-xs font-medium text-[#6b4d2f] underline underline-offset-4"
+                            onClick={() =>
+                              void handleReport({
+                                key: `reply:${reply.id}`,
+                                sourceType: "reply",
+                                sourceId: reply.id,
+                              })
+                            }
+                            disabled={reportingByKey[`reply:${reply.id}`]}
+                          >
+                            {reportingByKey[`reply:${reply.id}`]
+                              ? "Reporting..."
+                              : "Report"}
+                          </button>
+                          {reportMessageByKey[`reply:${reply.id}`] ? (
+                            <p className="text-xs text-[#5f6f72]">
+                              {reportMessageByKey[`reply:${reply.id}`]}
+                            </p>
+                          ) : null}
+                        </div>
+                      ) : null}
                     </li>
                   ))}
                 </ul>

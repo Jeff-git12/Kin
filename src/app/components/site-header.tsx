@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getSupabaseBrowserClient } from "@/app/lib/supabase";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -19,7 +20,10 @@ const linkClass =
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState<boolean | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const shareCopyByPath: Record<string, { title: string; text: string }> = {
     "/town-square": {
@@ -40,7 +44,7 @@ export function SiteHeader() {
     },
   };
 
-  async function handleShareKin() {
+  function getInviteContext() {
     const shareUrl =
       typeof window !== "undefined"
         ? `${window.location.origin}${pathname ?? ""}`
@@ -49,8 +53,21 @@ export function SiteHeader() {
       title: "KIN — Connect. Grow. Belong.",
       text: "Join me on KIN, a calm trust-first community space for real connection.",
     };
-    const shareTitle = copy.title;
-    const shareText = copy.text;
+    const inviteMessage = `${copy.text}\n\n${shareUrl}`;
+    return { shareUrl, ...copy, inviteMessage };
+  }
+
+  function openSmsInvite() {
+    if (typeof window === "undefined") return;
+    const { inviteMessage } = getInviteContext();
+    const encoded = encodeURIComponent(inviteMessage);
+    window.location.href = `sms:?&body=${encoded}`;
+    setShareMessage("Opening text message...");
+    window.setTimeout(() => setShareMessage(null), 3000);
+  }
+
+  async function handleShareKin() {
+    const { shareUrl, title: shareTitle, text: shareText } = getInviteContext();
 
     try {
       if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
@@ -87,6 +104,51 @@ export function SiteHeader() {
     }
   }
 
+  useEffect(() => {
+    let mounted = true;
+    let unsubscribe: (() => void) | null = null;
+    try {
+      const supabase = getSupabaseBrowserClient();
+      void (async () => {
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (!mounted) return;
+          setIsSignedIn(!!user);
+        } catch {
+          if (mounted) setIsSignedIn(false);
+        }
+      })();
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setIsSignedIn(!!session?.user);
+      });
+      unsubscribe = () => subscription.unsubscribe();
+    } catch {
+      if (mounted) setIsSignedIn(false);
+    }
+
+    return () => {
+      mounted = false;
+      unsubscribe?.();
+    };
+  }, []);
+
+  async function handleLogOut() {
+    setSigningOut(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      setMenuOpen(false);
+      router.refresh();
+    } finally {
+      setSigningOut(false);
+    }
+  }
+
   return (
     <header className="relative sticky top-0 z-50 border-b border-[#dfd5c7]/90 bg-[#f7f3ec]/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
@@ -96,47 +158,77 @@ export function SiteHeader() {
         >
           KIN
         </Link>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:hidden">
+            {isSignedIn !== true ? (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-lg border border-[#d8cbb8] bg-[#fffdf9] px-2.5 py-1.5 text-xs font-medium text-[#3f5255]"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="rounded-lg bg-[#2f6f74] px-2.5 py-1.5 text-xs font-medium text-[#f7f3ec]"
+                >
+                  Sign up
+                </Link>
+              </>
+            ) : null}
+            {isSignedIn === true ? (
+              <button
+                type="button"
+                className="rounded-lg border border-[#d8cbb8] bg-[#fffdf9] px-2.5 py-1.5 text-xs font-medium text-[#3f5255]"
+                onClick={handleLogOut}
+                disabled={signingOut}
+              >
+                {signingOut ? "Logging out..." : "Log out"}
+              </button>
+            ) : null}
+          </div>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-lg border border-[#d8cbb8] bg-[#fffdf9] p-2 text-[#3f5255] md:hidden"
-          aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          <span className="sr-only">Menu</span>
-          {menuOpen ? (
-            <svg
-              className="size-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="size-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          )}
-        </button>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-lg border border-[#d8cbb8] bg-[#fffdf9] p-2 text-[#3f5255] md:hidden"
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span className="sr-only">Menu</span>
+            {menuOpen ? (
+              <svg
+                className="size-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="size-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
 
         <nav
           className={`absolute left-0 right-0 top-full flex-col gap-1 border-b border-[#dfd5c7] bg-[#f7f3ec] px-6 py-4 md:static md:flex md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0 ${
@@ -160,20 +252,37 @@ export function SiteHeader() {
           >
             Share KIN
           </button>
+          <button
+            type="button"
+            className={`${linkClass} md:hidden`}
+            onClick={openSmsInvite}
+          >
+            Text Invite
+          </button>
           <Link
             href="/login"
-            className={linkClass}
+            className={`${linkClass} ${isSignedIn === true ? "hidden" : "hidden md:inline-flex"}`}
             onClick={() => setMenuOpen(false)}
           >
             Log in
           </Link>
           <Link
             href="/signup"
-            className={`${linkClass} md:ml-1 md:bg-[#2f6f74] md:text-[#f7f3ec] md:hover:bg-[#285f63]`}
+            className={`${linkClass} ${isSignedIn === true ? "hidden" : "hidden md:ml-1 md:inline-flex md:bg-[#2f6f74] md:text-[#f7f3ec] md:hover:bg-[#285f63]"}`}
             onClick={() => setMenuOpen(false)}
           >
             Sign Up
           </Link>
+          {isSignedIn === true ? (
+            <button
+              type="button"
+              className={`${linkClass} hidden md:inline-flex`}
+              onClick={handleLogOut}
+              disabled={signingOut}
+            >
+              {signingOut ? "Logging out..." : "Log out"}
+            </button>
+          ) : null}
         </nav>
       </div>
       {shareMessage ? (

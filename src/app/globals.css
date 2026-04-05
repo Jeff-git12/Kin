@@ -7,6 +7,9 @@
   --accent: #2f6f74;
   --accent-soft: #efe5d8;
   --border-soft: #dfd5c7;
+  --field-bg: #fffdf9;
+  --field-text: #223436;
+  --field-border: #d8cbb8;
 }
 
 @theme inline {
@@ -20,4 +23,35 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #161f21;
+    --foreground: #e5eeea;
+    --surface: #223033;
+    --accent: #62a3a8;
+    --accent-soft: #2a3a3d;
+    --border-soft: #3b4f53;
+    --field-bg: #1c272a;
+    --field-text: #e5eeea;
+    --field-border: #4b6266;
+  }
+}
+
+html {
+  color-scheme: light dark;
+}
+
+input,
+textarea,
+select {
+  background-color: var(--field-bg);
+  color: var(--field-text);
+  border-color: var(--field-border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--field-text) 60%, transparent);
 }
